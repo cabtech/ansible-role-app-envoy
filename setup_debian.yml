@@ -1,0 +1,19 @@
+---
+#
+- name: 'install some packages so we can install the repo key'
+  apt:
+    name: '{{envoy_dependencies}}'
+    state: present
+  become: true
+  tags:
+  - ct-envoy
+
+- name: 'add Envoy repo key'
+  apt_key:
+    url: 'https://getenvoy.io/gpg'
+    validate_certs: true
+    state: present
+  become: true
+  tags:
+  - ct-envoy
+...
