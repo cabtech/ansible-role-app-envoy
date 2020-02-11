@@ -16,4 +16,24 @@
   become: true
   tags:
   - ct-envoy
+
+- name: 'add Envoy repository to APT'
+  apt_repository:
+    repo: 'deb [arch=amd64] https://dl.bintray.com/tetrate/getenvoy-deb {{ct_codename}} stable'
+    state: present
+    update_cache: true
+    filename: envoy
+  register: reg_envoy_repo
+  become: true
+  tags:
+  - ct-envoy
+
+- name: 'update APT cache and install Envoy'
+  apt:
+    name: '{{envoy_packages}}'
+    update_cache: '{{reg_envoy_repo is changed}}'
+    state: present
+  become: true
+  tags:
+  - ct-envoy
 ...
