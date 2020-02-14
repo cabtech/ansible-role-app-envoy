@@ -4,7 +4,7 @@
     path: '{{envoy_etc_dir}}'
     owner: root
     group: root
-    mode: '0655'
+    mode: '0755'
   become: true
   tags: ct-envoy
 ...
