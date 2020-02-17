@@ -1,0 +1,11 @@
+[Unit]
+Description=Envoy proxy process
+After=network.target
+ 
+[Service]
+Type=simple
+ExecStart=/bin/bash -c '/usr/bin/envoy --config-path /etc/envoy/envoy.yaml'
+TimeoutStartSec=0
+ 
+[Install]
+WantedBy=default.target
