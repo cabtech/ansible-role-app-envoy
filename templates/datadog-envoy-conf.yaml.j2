@@ -1,0 +1,10 @@
+---
+{% if envoy_feed_datadog %}
+init_config:
+
+instances:
+- stats_url: http://localhost:{{envoy_admin_port}}/stats
+{% else %}
+# not feeding Datadog
+{% endif %}
+... 

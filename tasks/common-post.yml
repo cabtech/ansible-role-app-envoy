@@ -1,3 +1,26 @@
 ---
-#
+- name: 'see if Datadog is installed (check_mode:false)'
+  stat:
+    path: /etc/datadog-agent
+  check_mode: false
+  register: doggy
+  tags:
+  - ct-envoy
+  - ct-envoy-datadog
+
+- name: 'render Datadog config file for Envoy'
+  template:
+    src: datadog-envoy-conf.yaml.j2
+    dest: /etc/datadog-agent/conf.d/envoy.d/conf.yaml
+    owner: root
+    group: root
+    mode: '0644'
+  when:
+  - doggy.stat.isdir is defined
+  - doggy.stat.isdir
+  notify: handler_restart_datadog_for_envoy
+  become: true
+  tags:
+  - ct-envoy
+  - ct-envoy-datadog
 ...
