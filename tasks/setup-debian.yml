@@ -37,21 +37,21 @@
   tags:
   - ct-envoy
 
-- name: 'Create systemd unit file for Envoy'
+- name: 'create systemd unit file for Envoy'
   template:
-    src: envoy-service.j2
-    dest: /etc/systemd/system/envoy-service
+    src: envoy.service.j2
+    dest: /etc/systemd/system/{{envoy_service}}
     owner: root
     group: root
-    mode: '0600'
+    mode: '0644'
   register: reg_service
   become: true
   tags:
   - ct-envoy
 
-- name: 'Set Envoy service to {{envoy_state}}'
+- name: 'set Envoy service to {{envoy_state}}'
   systemd:
-    name: envoy-service
+    name: '{{envoy_service}}'
     state: '{{envoy_state}}'
     enabled: true
     daemon_reload: '{{reg_service is changed}}'

@@ -3,6 +3,7 @@ envoy_admin_port: 9901
 envoy_dependencies: ['apt-transport-https', 'ca-certificates', 'curl', 'gnupg2', 'software-properties-common']
 envoy_etc_dir: /etc/envoy
 envoy_packages: ['getenvoy-envoy']
-envoy_state: started
 envoy_feed_datadog: false
+envoy_service: envoy.service
+envoy_state: started
 ...
