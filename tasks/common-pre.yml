@@ -2,9 +2,10 @@
 - name: 'set up Envoy directories'
   file:
     path: '{{envoy_etc_dir}}'
-    owner: root
     group: root
     mode: '0755'
+    owner: root
+    state: directory
   become: true
   tags: ct-envoy
 ...
