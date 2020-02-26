@@ -1,11 +1,31 @@
 ---
+
 - name: 'set up Envoy directories'
   file:
-    path: '{{envoy_etc_dir}}'
     group: root
     mode: '0755'
     owner: root
+    path: '{{envoy_etc_dir}}'
     state: directory
   become: true
   tags: ct-envoy
+
+- name: 'generate Lets Encrypt certificate'
+  command: /usr/bin/letsencrypt certonly -n --standalone --agree-tos -m {{envoy_email_addr}} -d {{envoy_fqdn}}
+  args:
+    creates: /etc/letsencrypt/live/{{envoy_fqdn}}/fullchain.pem
+  when: envoy_generate_certificate
+  become: true
+  tags: ct-envoy
+
+- name: 'render Envoy config file'
+  template:
+    backup: true
+    dest: '{{envoy_etc_dir}}/envoy.yaml'  # must be .yaml
+    group: root
+    owner: root
+    src: envoy_edge_proxy.yml.j2
+  become: true
+  tags: ct-envoy
+
 ...
