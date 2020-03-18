@@ -25,6 +25,7 @@
     group: root
     owner: root
     src: envoy_edge_proxy.yml.j2
+  notify: handler_restart_envoy
   become: true
   tags: ct-envoy
 

@@ -1,4 +1,10 @@
 ---
+- name: 'handler_restart_envoy'
+  systemd:
+    state: restarted
+    name: 'envoy'
+  become: true
+
 - name: 'handler_restart_datadog_for_envoy'
   systemd:
     state: restarted
