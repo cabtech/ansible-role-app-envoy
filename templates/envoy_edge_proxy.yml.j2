@@ -2,13 +2,13 @@
 admin:
   access_log_path: /tmp/admin_access.log
   address:
-    socket_address: { address: 0.0.0.0, port_value: 9901 }
+    socket_address: { address: 0.0.0.0, port_value: {{envoy_admin_port}} }
 
 static_resources:
   listeners:
     - name: listener_0
       address:
-        socket_address: { address: 0.0.0.0, port_value: 443 }
+        socket_address: { address: 0.0.0.0, port_value: {{envoy_main_port}} }
       filter_chains:
         - filters:
             - name: envoy.http_connection_manager
@@ -20,7 +20,11 @@ static_resources:
                   name: local_route
                   virtual_hosts:
                     - name: {{envoy_cluster_name}}
+{% if envoy_restrict_domain_to_port %}
+                      domains: ['{{envoy_fqdn}}:{{envoy_main_port}}']
+{% else %}
                       domains: ['{{envoy_fqdn}}']
+{% endif %}
                       routes:
                         - match:
                             prefix: '/'
