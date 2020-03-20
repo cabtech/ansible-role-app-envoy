@@ -6,9 +6,10 @@ admin:
 
 static_resources:
   listeners:
-    - name: listener_0
+{% for listener in envoy_listeners %}
+    - name: listener_{{listener.name}}
       address:
-        socket_address: { address: 0.0.0.0, port_value: {{envoy_main_port}} }
+        socket_address: { address: 0.0.0.0, port_value: {{listener.port}} }
       filter_chains:
         - filters:
             - name: envoy.http_connection_manager
@@ -19,17 +20,16 @@ static_resources:
                 route_config:
                   name: local_route
                   virtual_hosts:
-                    - name: {{envoy_cluster_name}}
-{% if envoy_restrict_domain_to_port %}
-                      domains: ['{{envoy_fqdn}}:{{envoy_main_port}}']
-{% else %}
-                      domains: ['{{envoy_fqdn}}']
-{% endif %}
+                    - name: {{listener.name}}
+                      domains:
+{% for sub_domain in listener.sub_domains %}
+                      - '{{listener.fqdn}}{{sub_domain}}'
+{% endfor %}
                       routes:
                         - match:
                             prefix: '/'
                           route:
-                            cluster: cluster_{{envoy_cluster_name}}
+                            cluster: cluster_{{listener.cluster_name}}
                             prefix_rewrite: '/'
                             max_grpc_timeout: 0s
                       cors:
@@ -53,20 +53,23 @@ static_resources:
               alpn_protocols: 'h2'
               tls_certificates:
                 - certificate_chain:
-                    filename: '/etc/letsencrypt/live/{{envoy_fqdn}}/fullchain.pem'
+                    filename: '/etc/letsencrypt/live/{{listener.fqdn}}/fullchain.pem'
                   private_key:
-                    filename: '/etc/letsencrypt/live/{{envoy_fqdn}}/privkey.pem'
+                    filename: '/etc/letsencrypt/live/{{listener.fqdn}}/privkey.pem'
+{% endfor %}
 
   clusters:
-    - name: cluster_{{envoy_cluster_name}}
+{% for cluster in envoy_clusters %}
+    - name: cluster_{{cluster.name}}
       connect_timeout: 0.25s
       type: logical_dns
       http2_protocol_options: {}
       lb_policy: round_robin
       upstream_connection_options: { tcp_keepalive: { keepalive_time: 1} }
       hosts:
-{% for upstream in envoy_upstreams %}
+{% for upstream in cluster.upstreams %}
       - { socket_address: { address: {{upstream.name}}, port_value: {{upstream.port}} } }
+{% endfor %}
 {% endfor %}
 
 layered_runtime:
