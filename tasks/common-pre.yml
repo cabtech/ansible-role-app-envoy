@@ -10,6 +10,27 @@
   become: true
   tags: ct-envoy
 
+- name: 'set sysctl for max files'
+  copy:
+    dest: /etc/sysctl.d/50-skew-maxfiles.conf
+    group: root
+    mode: '0644'
+    owner: root
+    src: sysctl-maxfiles.conf
+  become: true
+  tags: ct-envoy
+
+- name: 'set limits.d max files'
+  template:
+    dest: /etc/security/limits.d/90-skew-nofiles.conf
+    group: root
+    mode: '0644'
+    owner: root
+    src: limits-nofiles.conf.j2
+  notify: handler_reload_systemd
+  become: true
+  tags: ct-envoy
+
 - name: 'generate Lets Encrypt certificate'
   command: /usr/bin/letsencrypt certonly -n --standalone --agree-tos -m {{envoy_email_addr}} -d {{item.fqdn}}
   args:

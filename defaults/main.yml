@@ -5,9 +5,10 @@ envoy_dependencies: ['apt-transport-https', 'ca-certificates', 'curl', 'gnupg2',
 envoy_etc_dir: /etc/envoy
 envoy_generate_certificate: false
 envoy_listeners: []
+envoy_main_port: 443
+envoy_max_files: 8192
 envoy_packages: ['getenvoy-envoy']
 envoy_publish_to_datadog: false
-envoy_main_port: 443
 envoy_service: envoy.service
 envoy_state: started
 ...
