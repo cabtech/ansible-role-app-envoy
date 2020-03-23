@@ -6,6 +6,11 @@ After=network.target
 Type=simple
 ExecStart=/bin/bash -c '/usr/bin/envoy --config-path /etc/envoy/envoy.yaml'
 TimeoutStartSec=0
+{% if envoy_ulimit_nofile is defined %}
+LimitNOFILE={{envoy_ulimit_nofile | int }}
+{% else %}
+# LimitNOFILE not set
+{% endif %}
  
 [Install]
 WantedBy=default.target

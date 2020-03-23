@@ -66,6 +66,15 @@ static_resources:
       http2_protocol_options: {}
       lb_policy: round_robin
       upstream_connection_options: { tcp_keepalive: { keepalive_time: 1} }
+{% if cluster.circuit_breakers is defined %}
+      circuit_breakers:
+        thresholds:
+{% for cb in cluster.circuit_breakers %}
+        - {priority: {{cb.name}}, max_connections: {{cb.mc}}, max_pending_requests: {{cb.mpr}}, max_requests: {{cb.mr}} }
+{% endfor %}
+{% else %}
+      # no circuit breakers
+{% endif %}
       hosts:
 {% for upstream in cluster.upstreams %}
       - { socket_address: { address: {{upstream.name}}, port_value: {{upstream.port}} } }

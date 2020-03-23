@@ -1,6 +1,6 @@
 ----
 # ansible-role-app-envoy
-Role for installing Envoy edge proxy
+Role for installing an Envoy edge proxy
 
 ## Required Variables
 | Name | Type | Purpose |
@@ -12,6 +12,7 @@ Role for installing Envoy edge proxy
 | Name | Type | Purpose |
 | ---- | ------- | ----- |
 | envoy_email_addr | string | Used when creating a Let's Encrypt certificate (see `envoy_generate_certificate`) |
+| envoy_ulimit_nofile | int | used to pass LimitNOFILE=N to the Envoy unit file |
 
 ## Defaults
 | Name | Type | Purpose | Value |
@@ -32,6 +33,7 @@ List of dictionaries with the following keys:
 | ---- | ---- | ------- | ------- |
 | name | scalar | label | trading |
 | upstreams | list(dict(name, port)) | upstream endpoints and ports | |
+| circuit_breakers | list(dict(name, mc, mpr, mr)) | optional, mc=max_connections, mpr=max_pending_requests, mr=max_requests | |
 
 ## Listener structure
 List of dictionaries with the following keys:
