@@ -1,7 +1,18 @@
 ---
+- name: 'handler_restart_envoy'
+  systemd:
+    state: restarted
+    name: 'envoy'
+  become: true
+
 - name: 'handler_restart_datadog_for_envoy'
   systemd:
     state: restarted
     name: 'datadog-agent'
+  become: true
+
+- name: 'handler_reload_systemd'
+  systemd:
+    daemon_reload: true
   become: true
 ...
