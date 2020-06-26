@@ -65,7 +65,9 @@ static_resources:
     - name: cluster_{{cluster.name}}
       connect_timeout: 0.25s
       type: logical_dns
+{% if cluster.http1only | default(false) %}
       http2_protocol_options: {}
+{% endif %}
       lb_policy: round_robin
       upstream_connection_options: { tcp_keepalive: { keepalive_time: 1} }
 {% if cluster.circuit_breakers is defined %}
