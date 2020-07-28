@@ -17,6 +17,7 @@
   include_tasks: common-post.yml
   tags:
   - ct-envoy
+  - ct-envoy-datadog
 
 # --------------------------------
 ...
