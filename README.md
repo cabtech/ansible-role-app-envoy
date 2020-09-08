@@ -29,12 +29,13 @@ Role for installing an Envoy edge proxy
 
 ## Cluster structure
 List of dictionaries with the following keys:
-| Name | Type | Purpose | Notes |
-| ---- | ---- | ------- | ------- |
-| name | scalar | label | na |
-| http1only | Boolean | if true, omit http2_protocol_options from cluster | default=false |
-| upstreams | list(dict(name, port)) | upstream endpoints and ports | na |
-| circuit_breakers | list(dict(name, mc, mpr, mr)) | optional, mc=max_connections, mpr=max_pending_requests, mr=max_requests | na |
+| Name | Status | Type | Purpose | Notes |
+| ---- | ------ | ---- | ------- | ------- |
+| name | required | string | label | na |
+| circuit_breakers | optional | list(dict(name, mc, mpr, mr)) | optional, mc=max_connections, mpr=max_pending_requests, mr=max_requests | na |
+| dns | optional | string | select DNS method to use | options=logical_dns(default),strict_dns |
+| http2 | optional | Boolean | if true, include http2_protocol_options | default=true |
+| upstreams | required | list(dict(name, port)) | upstream endpoints and ports | na |
 
 ## Listener structure
 List of dictionaries with the following keys:

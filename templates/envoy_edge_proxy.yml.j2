@@ -71,7 +71,7 @@ static_resources:
 {% for cluster in envoy_clusters %}
     - name: cluster_{{cluster.name}}
       connect_timeout: 0.25s
-      type: logical_dns
+      type: {{ cluster.dns | default(logical_dns) }}
 {% if cluster.http2 | default(true) %}
       http2_protocol_options: {}
 {% endif %}
