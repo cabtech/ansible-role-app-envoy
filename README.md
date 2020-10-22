@@ -9,10 +9,11 @@ Role for installing an Envoy edge proxy
 | envoy_listeners| see below | how traffic is accepted and routed |
 
 ## Optional Variables
-| Name | Type | Purpose |
-| ---- | ------- | ----- |
-| envoy_email_addr | string | Used when creating a `Let's Encrypt` certificate (see `envoy_generate_certificate`) |
-| envoy_ulimit_nofile | int | used to pass `LimitNOFILE=N` to the Envoy unit file |
+| Name | Type | Purpose | Comment |
+| ---- | ------- | ----- | ------- |
+| envoy_email_addr | string | Used when creating a `Let's Encrypt` certificate (see `envoy_generate_certificate`) ||
+| envoy_extra_allow_headers | CSV | extra allowable headers to append to default set | e.g. 'grpc-encoding,content-encoding' | 
+| envoy_ulimit_nofile | int | used to pass `LimitNOFILE=N` to the Envoy unit file ||
 
 ## Defaults
 | Name | Type | Purpose | Value |
