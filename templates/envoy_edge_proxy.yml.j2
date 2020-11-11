@@ -31,8 +31,11 @@ static_resources:
                   virtual_hosts:
                     - name: {{listener.name}}
                       domains:
-{% for sub_domain in listener.sub_domains %}
-                      - '{{listener.fqdn}}{{sub_domain}}'
+{% for domain in listener.sub_domains %}
+                      - '{{listener.fqdn}}{{domain}}'
+{% endfor %}
+{% for domain in listener.full_domains %}
+                      - '{{domain}}'
 {% endfor %}
                       routes:
                         - match:

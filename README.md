@@ -45,8 +45,9 @@ List of dictionaries with the following keys:
 | cluster_name | string | name of the cluster (See above) to route traffic to | na |
 | name | string | name of the listener | na |
 | fqdn | string | fully qualified domain name | na |
+| full_domains | list(string) | added unaltered to domains list ||
 | port | integer | where to listen | 8080 |
-| sub_domains | list(string) | appended to fqdn to form domains list | [':443', ''] |
+| sub_domains | list(string) | appended to fqdn and added domains list | e.g. [':443', ''] |
 | use_tls | Boolean | if true, adds a tls_context section (pointing to Let's Encrypt certs) to a listener | default=true |
 
 ****
