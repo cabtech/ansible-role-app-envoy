@@ -1,6 +1,6 @@
 ---
 
-- name: 'set up Envoy directories'
+- name: 'Set up Envoy directories'
   file:
     group: root
     mode: '0755'
@@ -10,7 +10,7 @@
   become: true
   tags: ct-envoy
 
-- name: 'set sysctl for max files'
+- name: 'Set sysctl for max files'
   copy:
     dest: /etc/sysctl.d/50-skew-maxfiles.conf
     group: root
@@ -20,7 +20,7 @@
   become: true
   tags: ct-envoy
 
-- name: 'set limits.d max files'
+- name: 'Set limits.d max files'
   template:
     dest: /etc/security/limits.d/90-skew-nofiles.conf
     group: root
@@ -31,7 +31,7 @@
   become: true
   tags: ct-envoy
 
-- name: 'generate Lets Encrypt certificate'
+- name: 'Generate Lets Encrypt certificate'
   command: /usr/bin/letsencrypt certonly -n --standalone --agree-tos -m {{ envoy_email_addr }} -d {{ item.fqdn }}
   args:
     creates: /etc/letsencrypt/live/{{ item.fqdn }}/fullchain.pem
@@ -40,7 +40,7 @@
   become: true
   tags: ct-envoy
 
-- name: 'render Envoy config file'
+- name: 'Render Envoy config file'
   template:
     backup: true
     dest: '{{ envoy_etc_dir }}/envoy.yaml'  # must be .yaml

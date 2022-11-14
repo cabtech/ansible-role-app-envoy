@@ -1,7 +1,7 @@
 ---
 # --------------------------------
 
-- name: 'install some packages so we can install the repo key'
+- name: 'Install some packages so we can install the repo key'
   apt:
     name: '{{ envoy_dependencies }}'
     state: present
@@ -9,7 +9,7 @@
   tags:
   - ct-envoy
 
-- name: 'add Envoy repo key'
+- name: 'Add Envoy repo key'
   apt_key:
     url: 'https://getenvoy.io/gpg'
     validate_certs: true
@@ -18,7 +18,7 @@
   tags:
   - ct-envoy
 
-- name: 'add Envoy repository to APT'
+- name: 'Add Envoy repository to APT'
   apt_repository:
     repo: 'deb [arch=amd64] https://dl.bintray.com/tetrate/getenvoy-deb {{ ct_codename }} stable'
     state: present
@@ -29,7 +29,7 @@
   tags:
   - ct-envoy
 
-- name: 'update APT cache and install Envoy'
+- name: 'Update APT cache and install Envoy'
   apt:
     name: '{{ envoy_packages }}'
     update_cache: '{{ reg_envoy_repo is changed }}'
@@ -38,7 +38,7 @@
   tags:
   - ct-envoy
 
-- name: 'create systemd unit file for Envoy'
+- name: 'Create systemd unit file for Envoy'
   template:
     src: envoy.service.j2
     dest: /etc/systemd/system/{{ envoy_service }}
@@ -50,7 +50,7 @@
   tags:
   - ct-envoy
 
-- name: 'set Envoy service to {{ envoy_state }}'
+- name: 'Set Envoy service to {{ envoy_state }}'
   systemd:
     name: '{{ envoy_service }}'
     state: '{{ envoy_state }}'

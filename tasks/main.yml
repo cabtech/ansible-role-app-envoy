@@ -1,19 +1,19 @@
 ---
 # --------------------------------
 
-- name: 'include common pre-tasks'
+- name: 'Include common pre-tasks'
   include_tasks: common-pre.yml
   tags:
   - ct-envoy
 
-- name: 'include {{ ct_family }} tasks'
+- name: 'Include {{ ct_family }} tasks'
   include_tasks: setup-{{ ct_family }}.yml
   when:
   - ct_family == 'debian' or ct_family == 'redhat'
   tags:
   - ct-envoy
 
-- name: 'include comon post-tasks'
+- name: 'Include comon post-tasks'
   include_tasks: common-post.yml
   tags:
   - ct-envoy

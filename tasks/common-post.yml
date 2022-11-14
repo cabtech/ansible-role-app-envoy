@@ -1,5 +1,5 @@
 ---
-- name: 'see if Datadog is installed (check_mode:false)'
+- name: 'See if Datadog is installed (check_mode:false)'
   stat:
     path: /etc/datadog-agent
   check_mode: false
@@ -8,7 +8,7 @@
   - ct-envoy
   - ct-envoy-datadog
 
-- name: 'render Datadog config file for Envoy'
+- name: 'Render Datadog config file for Envoy'
   template:
     src: datadog-envoy-conf.yaml.j2
     dest: /etc/datadog-agent/conf.d/envoy.d/conf.yaml
