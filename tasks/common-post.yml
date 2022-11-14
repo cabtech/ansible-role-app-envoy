@@ -1,13 +1,13 @@
 ---
 - name: 'See if Datadog is installed (check_mode:false)'
-  stat:
+  ansible.builtin.stat:
     path: /etc/datadog-agent
   check_mode: false
   register: doggy
   tags: ["ct-envoy"]
 
 - name: 'Render Datadog config file for Envoy'
-  template:
+  ansible.builtin.template:
     src: datadog-envoy-conf.yaml.j2
     dest: /etc/datadog-agent/conf.d/envoy.d/conf.yaml
     owner: root
