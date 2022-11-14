@@ -5,7 +5,7 @@
     group: root
     mode: '0755'
     owner: root
-    path: '{{envoy_etc_dir}}'
+    path: '{{ envoy_etc_dir }}'
     state: directory
   become: true
   tags: ct-envoy
@@ -32,10 +32,10 @@
   tags: ct-envoy
 
 - name: 'generate Lets Encrypt certificate'
-  command: /usr/bin/letsencrypt certonly -n --standalone --agree-tos -m {{envoy_email_addr}} -d {{item.fqdn}}
+  command: /usr/bin/letsencrypt certonly -n --standalone --agree-tos -m {{ envoy_email_addr }} -d {{ item.fqdn }}
   args:
-    creates: /etc/letsencrypt/live/{{item.fqdn}}/fullchain.pem
-  loop: '{{envoy_listeners}}'
+    creates: /etc/letsencrypt/live/{{ item.fqdn }}/fullchain.pem
+  loop: '{{ envoy_listeners }}'
   when: envoy_generate_certificate
   become: true
   tags: ct-envoy
@@ -43,7 +43,7 @@
 - name: 'render Envoy config file'
   template:
     backup: true
-    dest: '{{envoy_etc_dir}}/envoy.yaml'  # must be .yaml
+    dest: '{{ envoy_etc_dir }}/envoy.yaml'  # must be .yaml
     group: root
     owner: root
     src: envoy_edge_proxy.yml.j2
