@@ -45,6 +45,7 @@
     backup: true
     dest: '{{ envoy_etc_dir }}/envoy.yaml'  # must be .yaml
     group: root
+    mode: "0644"
     owner: root
     src: envoy_edge_proxy.yml.j2
   notify: Handler_Restart_Envoy
