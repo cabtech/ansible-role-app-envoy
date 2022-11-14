@@ -2,7 +2,7 @@
 # --------------------------------
 
 - name: 'Install some packages so we can install the repo key'
-  apt:
+  ansible.builtin.apt:
     name: '{{ envoy_dependencies }}'
     state: present
   become: true
@@ -10,7 +10,7 @@
   - ct-envoy
 
 - name: 'Add Envoy repo key'
-  apt_key:
+  ansible.builtin.apt_key:
     url: 'https://getenvoy.io/gpg'
     validate_certs: true
     state: present
@@ -19,7 +19,7 @@
   - ct-envoy
 
 - name: 'Add Envoy repository to APT'
-  apt_repository:
+  ansible.builtin.apt_repository:
     repo: 'deb [arch=amd64] https://dl.bintray.com/tetrate/getenvoy-deb {{ ct_codename }} stable'
     state: present
     update_cache: true
@@ -30,7 +30,7 @@
   - ct-envoy
 
 - name: 'Update APT cache and install Envoy'
-  apt:
+  ansible.builtin.apt:
     name: '{{ envoy_packages }}'
     update_cache: '{{ reg_envoy_repo is changed }}'
     state: present
@@ -39,7 +39,7 @@
   - ct-envoy
 
 - name: 'Create systemd unit file for Envoy'
-  template:
+  ansible.builtin.template:
     src: envoy.service.j2
     dest: /etc/systemd/system/{{ envoy_service }}
     owner: root
@@ -51,7 +51,7 @@
   - ct-envoy
 
 - name: 'Set Envoy service to {{ envoy_state }}'
-  systemd:
+  ansible.builtin.systemd:
     name: '{{ envoy_service }}'
     state: '{{ envoy_state }}'
     enabled: true

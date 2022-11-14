@@ -18,7 +18,7 @@
   when:
   - doggy.stat.isdir is defined
   - doggy.stat.isdir
-  notify: handler_restart_datadog_for_envoy
+  notify: Handler_Restart_Datadog_For_Envoy
   become: true
   tags:
   - ct-envoy

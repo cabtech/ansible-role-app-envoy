@@ -1,18 +1,18 @@
 ---
-- name: 'handler_restart_envoy'
-  systemd:
+- name: 'Handler_Restart_Envoy'
+  ansible.builtin.systemd:
     state: restarted
     name: 'envoy'
   become: true
 
-- name: 'handler_restart_datadog_for_envoy'
-  systemd:
+- name: 'Handler_Restart_Datadog_For_Envoy'
+  ansible.builtin.systemd:
     state: restarted
     name: 'datadog-agent'
   become: true
 
-- name: 'handler_reload_systemd'
-  systemd:
+- name: 'Handler_Reload_Systemd'
+  ansible.builtin.systemd:
     daemon_reload: true
   become: true
 ...

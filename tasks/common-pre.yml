@@ -1,7 +1,7 @@
 ---
 
 - name: 'Set up Envoy directories'
-  file:
+  ansible.builtin.file:
     group: root
     mode: '0755'
     owner: root
@@ -11,7 +11,7 @@
   tags: ct-envoy
 
 - name: 'Set sysctl for max files'
-  copy:
+  ansible.builtin.copy:
     dest: /etc/sysctl.d/50-skew-maxfiles.conf
     group: root
     mode: '0644'
@@ -21,18 +21,18 @@
   tags: ct-envoy
 
 - name: 'Set limits.d max files'
-  template:
+  ansible.builtin.template:
     dest: /etc/security/limits.d/90-skew-nofiles.conf
     group: root
     mode: '0644'
     owner: root
     src: limits-nofiles.conf.j2
-  notify: handler_reload_systemd
+  notify: Handler_Reload_Systemd
   become: true
   tags: ct-envoy
 
 - name: 'Generate Lets Encrypt certificate'
-  command: /usr/bin/letsencrypt certonly -n --standalone --agree-tos -m {{ envoy_email_addr }} -d {{ item.fqdn }}
+  ansible.builtin.command: /usr/bin/letsencrypt certonly -n --standalone --agree-tos -m {{ envoy_email_addr }} -d {{ item.fqdn }}
   args:
     creates: /etc/letsencrypt/live/{{ item.fqdn }}/fullchain.pem
   loop: '{{ envoy_listeners }}'
@@ -41,13 +41,13 @@
   tags: ct-envoy
 
 - name: 'Render Envoy config file'
-  template:
+  ansible.builtin.template:
     backup: true
     dest: '{{ envoy_etc_dir }}/envoy.yaml'  # must be .yaml
     group: root
     owner: root
     src: envoy_edge_proxy.yml.j2
-  notify: handler_restart_envoy
+  notify: Handler_Restart_Envoy
   become: true
   tags: ct-envoy
 
