@@ -1,5 +1,6 @@
 ---
 skip_list:
+- command-instead-of-module
 - meta-no-info
 - role-name
 - yaml[indentation]
