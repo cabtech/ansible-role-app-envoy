@@ -1,18 +1,18 @@
 ---
-- name: 'See if Datadog is installed (check_mode:false)'
+- name: "See if Datadog is installed (check_mode:false)"
   ansible.builtin.stat:
     path: /etc/datadog-agent
   check_mode: false
   register: doggy
   tags: ["ct-envoy"]
 
-- name: 'Render Datadog config file for Envoy'
+- name: "Render Datadog config file for Envoy"
   ansible.builtin.template:
     src: datadog-envoy-conf.yaml.j2
     dest: /etc/datadog-agent/conf.d/envoy.d/conf.yaml
     owner: root
     group: root
-    mode: '0644'
+    mode: "0644"
   when:
   - doggy.stat.isdir is defined
   - doggy.stat.isdir
