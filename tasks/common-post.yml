@@ -4,9 +4,7 @@
     path: /etc/datadog-agent
   check_mode: false
   register: doggy
-  tags:
-  - ct-envoy
-  - ct-envoy-datadog
+  tags: ["ct-envoy"]
 
 - name: 'Render Datadog config file for Envoy'
   template:
@@ -20,7 +18,5 @@
   - doggy.stat.isdir
   notify: Handler_Restart_Datadog_For_Envoy
   become: true
-  tags:
-  - ct-envoy
-  - ct-envoy-datadog
+  tags: ["ct-envoy"]
 ...

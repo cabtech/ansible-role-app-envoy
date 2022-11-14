@@ -6,8 +6,7 @@
     name: '{{ envoy_dependencies }}'
     state: present
   become: true
-  tags:
-  - ct-envoy
+  tags: ["ct-envoy"]
 
 - name: 'Add Envoy repo key'
   ansible.builtin.apt_key:
@@ -15,8 +14,7 @@
     validate_certs: true
     state: present
   become: true
-  tags:
-  - ct-envoy
+  tags: ["ct-envoy"]
 
 - name: 'Add Envoy repository to APT'
   ansible.builtin.apt_repository:
@@ -26,8 +24,7 @@
     filename: envoy
   register: reg_envoy_repo
   become: true
-  tags:
-  - ct-envoy
+  tags: ["ct-envoy"]
 
 - name: 'Update APT cache and install Envoy'
   ansible.builtin.apt:
@@ -35,8 +32,7 @@
     update_cache: '{{ reg_envoy_repo is changed }}'
     state: present
   become: true
-  tags:
-  - ct-envoy
+  tags: ["ct-envoy"]
 
 - name: 'Create systemd unit file for Envoy'
   ansible.builtin.template:
@@ -47,8 +43,7 @@
     mode: '0644'
   register: reg_service
   become: true
-  tags:
-  - ct-envoy
+  tags: ["ct-envoy"]
 
 - name: 'Set Envoy service to {{ envoy_state }}'
   ansible.builtin.systemd:
@@ -57,8 +52,7 @@
     enabled: true
     daemon_reload: '{{ reg_service is changed }}'
   become: true
-  tags:
-  - ct-envoy
+  tags: ["ct-envoy"]
 
 # --------------------------------
 ...
