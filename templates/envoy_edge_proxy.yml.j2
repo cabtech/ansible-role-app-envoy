@@ -1,108 +1,116 @@
 {% set DEFAULT_ALLOW_HEADERS = 'keep-alive,user-agent,cache-control,content-type,content-transfer-encoding,custom-header-1,x-accept-content-transfer-encoding,x-accept-response-streaming,x-user-agent,x-grpc-web,grpc-timeout,Authorization' %}
 {% set DEFAULT_ALLOW_METHODS = 'GET, PUT, DELETE, POST, OPTIONS' %}
 ---
+# --------------------------------
+
 admin:
-  access_log_path: /tmp/admin_access.log
+{# access_log_path: /tmp/admin_access.log #}
   address:
-    socket_address: { address: 0.0.0.0, port_value: {{envoy_admin_port}} }
+    socket_address:
+      address: 0.0.0.0
+      port_value: {{ envoy_admin_port }}
 
 static_resources:
   listeners:
 {% for listener in envoy_listeners %}
-    - name: listener_{{listener.name}}
-      address:
-        socket_address: { address: 0.0.0.0, port_value: {{listener.port}} }
+  - name: listener_{{ listener.name }}
+    address:
+      socket_address:
+        address: 0.0.0.0
+        port_value: {{ listener.port }}
 {% if listener.keepalive | default(false) %}
-      socket_options:
-      - {level: 1, name: 9, int_value: 1, state: STATE_LISTENING }     # 1=SOL_SOCKET,  9=SO_KEEPALIVE
-      - {level: 6, name: 4, int_value: 5, state: STATE_LISTENING}      # 6=IPPROTO_TCP, 4=TCP_KEEPIDLE
-      - {level: 6, name: 5, int_value: 5, state: STATE_LISTENING}      # 6=IPPROTO_TCP, 5=TCP_KEEPINTVL
-      - {level: 6, name: 18, int_value: 30000, state: STATE_LISTENING} # 6=IPPROTO_TCP, 18=?
+    socket_options:
+    - {level: 1, name: 9, int_value: 1, state: STATE_LISTENING }     # 1=SOL_SOCKET,  9=SO_KEEPALIVE
+    - {level: 6, name: 4, int_value: 5, state: STATE_LISTENING}      # 6=IPPROTO_TCP, 4=TCP_KEEPIDLE
+    - {level: 6, name: 5, int_value: 5, state: STATE_LISTENING}      # 6=IPPROTO_TCP, 5=TCP_KEEPINTVL
+    - {level: 6, name: 18, int_value: 30000, state: STATE_LISTENING} # 6=IPPROTO_TCP, 18=?
 {% endif %}
-      filter_chains:
-        - filters:
-            - name: envoy.http_connection_manager
-              config:
-                stream_idle_timeout: 0s
-                codec_type: auto
-                stat_prefix: ingress_http
-                route_config:
-                  name: local_route
-                  virtual_hosts:
-                    - name: {{listener.name}}
-                      domains:
+    filter_chains:
+    - filters:
+      - name: envoy.filters.network.http_connection_manager
+        typed_config:
+          "@type": type.googleapis.com/envoy.extensions.filters.network.http_connection_manager.v3.HttpConnectionManager
+          stream_idle_timeout: 0s
+          codec_type: auto
+          stat_prefix: ingress_http
+          route_config:
+            name: local_route
+            virtual_hosts:
+            - name: {{listener.name}}
+              domains:
 {% for domain in (listener.sub_domains | default([])) %}
-                      - '{{listener.fqdn}}{{domain}}'
+              - '{{listener.fqdn}}{{domain}}'
 {% endfor %}
 {% for domain in (listener.full_domains | default([])) %}
-                      - '{{domain}}'
+              - '{{domain}}'
 {% endfor %}
-                      routes:
-                        - match:
-                            prefix: '/'
-                          route:
-                            cluster: cluster_{{listener.cluster_name}}
-                            prefix_rewrite: '/'
-                            max_grpc_timeout: 0s
-                      cors:
-                        allow_origin: ['*']
-                        allow_methods: {{DEFAULT_ALLOW_METHODS}}
+              routes:
+              - match:
+                  prefix: '/'
+                route:
+                  cluster: cluster_{{listener.cluster_name}}
+                  prefix_rewrite: '/'
+                  max_grpc_timeout: 0s
+              cors:
+                allow_origin_string_match:
+                - {contains: "*"}
+                allow_methods: {{DEFAULT_ALLOW_METHODS}}
 {% if envoy_extra_allow_headers is defined %}
-                        allow_headers: {{DEFAULT_ALLOW_HEADERS}},{{envoy_extra_allow_headers}}
+                allow_headers: {{DEFAULT_ALLOW_HEADERS}},{{envoy_extra_allow_headers}}
 {% else %}
-                        allow_headers: {{DEFAULT_ALLOW_HEADERS}}
+                allow_headers: {{DEFAULT_ALLOW_HEADERS}}
 {% endif %}
-                        max_age: '1728000'
-                        expose_headers: custom-header-1,grpc-status,grpc-message
-                        filter_enabled:
-                          default_value:
-                            numerator: 100
-                            denominator: HUNDRED
-                          runtime_key: cors.www.enabled
-                http_filters:
-                  - name: envoy.grpc_web
-                  - name: envoy.cors
-                  - name: envoy.router
+                max_age: '1728000'
+                expose_headers: custom-header-1,grpc-status,grpc-message
+                filter_enabled:
+                  default_value:
+                    numerator: 100
+                    denominator: HUNDRED
+                  runtime_key: cors.www.enabled
+          http_filters:
+          - name: envoy.grpc_web
+          - name: envoy.cors
+          - name: envoy.router
 {% if listener.use_tls | default(false) %}
-          tls_context:
-            common_tls_context:
-              alpn_protocols: 'h2'
-              tls_certificates:
-                - certificate_chain:
-                    filename: '/etc/letsencrypt/live/{{listener.fqdn}}/fullchain.pem'
-                  private_key:
-                    filename: '/etc/letsencrypt/live/{{listener.fqdn}}/privkey.pem'
+        tls_context:
+          common_tls_context:
+            alpn_protocols: 'h2'
+            tls_certificates:
+              - certificate_chain:
+                  filename: '/etc/letsencrypt/live/{{listener.fqdn}}/fullchain.pem'
+                private_key:
+                  filename: '/etc/letsencrypt/live/{{listener.fqdn}}/privkey.pem'
 {% endif %}
-{% endfor %}
-
+{% endfor %}{# listeners #}
   clusters:
 {% for cluster in envoy_clusters %}
-    - name: cluster_{{cluster.name}}
-      connect_timeout: 0.25s
-      type: {{ cluster.dns | default('logical_dns') }}
-{% if cluster.http2 | default(false) %}
-      http2_protocol_options: {}
-{% endif %}
-      lb_policy: round_robin
-      upstream_connection_options: { tcp_keepalive: { keepalive_time: 1} }
-{% if cluster.circuit_breakers is defined %}
-      circuit_breakers:
-        thresholds:
-{% for cb in cluster.circuit_breakers %}
-        - {priority: {{cb.name}}, max_connections: {{cb.mc}}, max_pending_requests: {{cb.mpr}}, max_requests: {{cb.mr}} }
-{% endfor %}
-{% else %}
-      # no circuit breakers
-{% endif %}
-      hosts:
+  - name: cluster_{{cluster.name}}
+    connect_timeout: 0.25s
+    type: {{ cluster.dns | default('STRICT_DNS') }}
+    lb_policy: {{ cluster.policy | default('ROUND_ROBIN') }}
+    load_assignment:
+      cluster_name: {{ cluster.name }}
+      endpoints:
+      - lb_endpoints:
 {% for upstream in cluster.upstreams %}
-      - { socket_address: { address: {{upstream.name}}, port_value: {{upstream.port}} } }
+        - endpoint:
+            address:
+              socket_address:
+                address: {{ upstream.name }}
+                port_value: {{ upstream.port }}
 {% endfor %}
+{% if cluster.http2 | default(false) %}
+    http2_protocol_options: {}
+{% endif %}
+{#  upstream_connection_options: { tcp_keepalive: { keepalive_time: 1} } #}
+{% if cluster.circuit_breakers is defined %}
+    circuit_breakers:
+      thresholds:
+{% for cb in cluster.circuit_breakers %}
+      - {priority: {{cb.name}}, max_connections: {{cb.mc}}, max_pending_requests: {{cb.mpr}}, max_requests: {{cb.mr}} }
 {% endfor %}
+{% endif %}
+{% endfor %}{# clusters #}
 
-layered_runtime:
-  layers:
-  - name: static_layer
-    static_layer:
-      envoy.deprecated_features:envoy.api.v2.route.CorsPolicy.allow_origin: true
+# --------------------------------
 ...
