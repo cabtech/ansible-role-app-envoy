@@ -63,7 +63,7 @@ static_resources:
                   - name: envoy.grpc_web
                   - name: envoy.cors
                   - name: envoy.router
-{% if listener.use_tls | default(true) %}
+{% if listener.use_tls | default(false) %}
           tls_context:
             common_tls_context:
               alpn_protocols: 'h2'
@@ -80,7 +80,7 @@ static_resources:
     - name: cluster_{{cluster.name}}
       connect_timeout: 0.25s
       type: {{ cluster.dns | default('logical_dns') }}
-{% if cluster.http2 | default(true) %}
+{% if cluster.http2 | default(false) %}
       http2_protocol_options: {}
 {% endif %}
       lb_policy: round_robin
