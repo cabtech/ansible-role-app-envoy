@@ -1,7 +1,7 @@
 ---
 # --------------------------------
 
-- name: "Include common pre-tasks"
+- name: "Include some common tasks"
   include_tasks: common-pre.yml
   tags: ["ct-envoy"]
 
@@ -11,7 +11,27 @@
   - ct_family == "debian" or ct_family == "redhat"
   tags: ["ct-envoy"]
 
-- name: "Include comon post-tasks"
+- name: "Create systemd unit file for {{ envoy_svc_name }}"
+  ansible.builtin.template:
+    dest: /etc/systemd/system/{{ envoy_svc_name }}.service
+    group: root
+    mode: "0644"
+    owner: root
+    src: envoy.service.j2
+  register: reg_service
+  become: true
+  tags: ["ct-envoy"]
+
+- name: "Set {{ envoy_svc_name }} service to {{ envoy_svc_state }}"
+  ansible.builtin.systemd:
+    daemon_reload: "{{ reg_service is changed }}"
+    enabled: "{{ envoy_svc_enabled }}"
+    name: "{{ envoy_svc_name }}.service"
+    state: "{{ envoy_svc_state }}"
+  become: true
+  tags: ["ct-envoy"]
+
+- name: "Include more common tasks"
   include_tasks: common-post.yml
   tags: ["ct-envoy"]
 

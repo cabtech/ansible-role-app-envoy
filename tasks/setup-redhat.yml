@@ -1,3 +1,41 @@
 ---
-#
+# --------------------------------
+
+- name: "Install package dependencies"
+  ansible.builtin.yum:
+    name: "{{ envoy_dependencies.redhat }}"
+    state: present
+  become: true
+  tags: ["ct-envoy"]
+
+- name: "Install repo key"
+  ansible.builtin.rpm_key:
+    key: "{{ envoy_repo_key }}"
+    state: present
+  become: true
+  tags: ["ct-envoy"]
+
+- name: "Install repo"
+  ansible.builtin.get_url:
+    dest: /etc/yum.repos.d/{{ envoy_repo_name }}.repo
+    mode: "0644"
+    url: "{{ envoy_repo_url }}"
+  become: true
+  tags: ["ct-envoy"]
+
+- name: "Enable repo (TODO: switch from command module)"
+  ansible.builtin.command: "yum makecache --disablerepo='*' --enablerepo='{{ envoy_repo_name }}'"
+  register: slartibartfast
+  changed_when: "'gibberish198230182' in slartibartfast.stdout"
+  become: true
+  tags: ["ct-envoy"]
+
+- name: "Install main package"
+  ansible.builtin.yum:
+    name: "{{ envoy_packages.redhat }}"
+    state: present
+  become: true
+  tags: ["ct-envoy"]
+
+# --------------------------------
 ...

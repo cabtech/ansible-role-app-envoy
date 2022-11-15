@@ -12,7 +12,7 @@
 
 - name: "Set sysctl for max files"
   ansible.builtin.copy:
-    dest: /etc/sysctl.d/50-skew-maxfiles.conf
+    dest: /etc/sysctl.d/50-org-maxfiles.conf
     group: root
     mode: "0644"
     owner: root
@@ -22,7 +22,7 @@
 
 - name: "Set limits.d max files"
   ansible.builtin.template:
-    dest: /etc/security/limits.d/90-skew-nofiles.conf
+    dest: /etc/security/limits.d/90-org-nofiles.conf
     group: root
     mode: "0644"
     owner: root
@@ -43,7 +43,7 @@
 - name: "Render Envoy config file"
   ansible.builtin.template:
     backup: true
-    dest: "{{ envoy_etc_dir }}/envoy.yaml"  # must be .yaml
+    dest: "{{ envoy_etc_dir }}/envoy.yaml"  # must end with .yaml
     group: root
     mode: "0644"
     owner: root

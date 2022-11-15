@@ -3,7 +3,7 @@
 
 - name: "Install some packages so we can install the repo key"
   ansible.builtin.apt:
-    name: "{{ envoy_dependencies }}"
+    name: "{{ envoy_dependencies.debian }}"
     state: present
   become: true
   tags: ["ct-envoy"]
@@ -28,29 +28,9 @@
 
 - name: "Update APT cache and install Envoy"
   ansible.builtin.apt:
-    name: "{{ envoy_packages }}"
+    name: "{{ envoy_packages.debian }}"
     update_cache: "{{ reg_envoy_repo is changed }}"
     state: present
-  become: true
-  tags: ["ct-envoy"]
-
-- name: "Create systemd unit file for Envoy"
-  ansible.builtin.template:
-    src: envoy.service.j2
-    dest: /etc/systemd/system/{{ envoy_service }}
-    owner: root
-    group: root
-    mode: "0644"
-  register: reg_service
-  become: true
-  tags: ["ct-envoy"]
-
-- name: "Set Envoy service to {{ envoy_state }}"
-  ansible.builtin.systemd:
-    name: "{{ envoy_service }}"
-    state: "{{ envoy_state }}"
-    enabled: true
-    daemon_reload: "{{ reg_service is changed }}"
   become: true
   tags: ["ct-envoy"]
 

@@ -1,4 +1,6 @@
 ---
+# --------------------------------
+
 - name: "See if Datadog is installed (check_mode:false)"
   ansible.builtin.stat:
     path: /etc/datadog-agent
@@ -19,4 +21,6 @@
   notify: Handler_Restart_Datadog_For_Envoy
   become: true
   tags: ["ct-envoy"]
+
+# --------------------------------
 ...
