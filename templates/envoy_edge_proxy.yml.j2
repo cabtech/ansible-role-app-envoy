@@ -56,6 +56,9 @@ static_resources:
                   prefix_rewrite: '/'
                   max_grpc_timeout: 0s
               cors:
+{% if listener.cors.allow_credentials is defined %}
+                allow_credentials: {{ listener.cors.allow_credentials | bool | lower }}
+{% endif %}
                 allow_origin_string_match:
                 - {contains: "*"}
                 allow_methods: {{DEFAULT_ALLOW_METHODS}}
