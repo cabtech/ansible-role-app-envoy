@@ -33,6 +33,10 @@ static_resources:
           stream_idle_timeout: 0s
           codec_type: auto
           stat_prefix: ingress_http
+{% if listener.websocket | default(false) %}
+          upgrade_configs:
+          - upgrade_type: websocket
+{% endif %}
           route_config:
             name: local_route
             virtual_hosts:

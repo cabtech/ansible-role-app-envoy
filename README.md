@@ -49,5 +49,6 @@ List of dictionaries with the following keys:
 | port | integer | where to listen | 8080 |
 | sub_domains | list(string) | appended to fqdn and added domains list | e.g. [':443', ''] |
 | use_tls | Boolean | if true, adds a tls_context section (pointing to Let's Encrypt certs) to a listener | default=true |
+| websocket | Boolean | if true, adds `upgrade_configs` section | default=false |
 
 ****
