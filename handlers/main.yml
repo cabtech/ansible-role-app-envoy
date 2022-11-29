@@ -2,7 +2,7 @@
 - name: "Handler_Restart_Envoy"
   ansible.builtin.systemd:
     state: restarted
-    name: "{{ envoy_svc_name }}"
+    name: "{{ envoy_svc_name }}.service"
   become: true
 
 - name: "Handler_Restart_Datadog_For_Envoy"
