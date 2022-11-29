@@ -54,7 +54,11 @@ static_resources:
                 route:
                   cluster: cluster_{{listener.cluster_name}}
                   prefix_rewrite: '/'
-                  max_grpc_timeout: 0s
+                  # max_grpc_timeout: 0s
+{% if listener.route.timeout is defined %}
+                  timeout: {{ listener.route.timeout }}
+                  idle_timeout: {{ listener.route.timeout }}
+{% endif %}
               cors:
 {% if listener.cors.allow_credentials is defined %}
                 allow_credentials: {{ listener.cors.allow_credentials | bool | lower }}
