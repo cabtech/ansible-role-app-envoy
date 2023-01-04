@@ -24,7 +24,7 @@
   tags: ["ct-envoy"]
 
 - name: "Enable repo (TODO: switch from command module)"
-  ansible.builtin.command: "yum makecache --disablerepo='*' --enablerepo='{{ envoy_repo_name }}'"
+  ansible.builtin.command: "yum makecache --assumeyes --disablerepo='*' --enablerepo='{{ envoy_repo_name }}'"
   register: slartibartfast
   changed_when: "'gibberish198230182' in slartibartfast.stdout"
   become: true
