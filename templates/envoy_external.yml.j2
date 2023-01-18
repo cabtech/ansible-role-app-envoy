@@ -13,6 +13,10 @@ admin:
 static_resources:
   listeners:
 {% for listener in envoy_listeners %}
+{%		if listener.add_redirect | default(false) %}
+{%			include "include/redirect.yml.j2" %}
+{%		endif %}
+#
   - name: listener_{{ listener.name }}
     address:
       socket_address:
@@ -55,7 +59,6 @@ static_resources:
                 route:
                   cluster: cluster_{{vhost.cluster_name}}
                   prefix_rewrite: '/'
-                  # max_grpc_timeout: 0s
 {%			if vhost.route.timeout is defined %}
                   timeout: {{ vhost.route.timeout }}
                   idle_timeout: {{ vhost.route.timeout }}
