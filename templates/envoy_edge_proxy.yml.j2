@@ -79,9 +79,9 @@ static_resources:
                     denominator: HUNDRED
                   runtime_key: cors.www.enabled
           http_filters:
-          - name: envoy.grpc_web
-          - name: envoy.cors
-          - name: envoy.router
+          - name: envoy.filters.http.grpc_web
+          - name: envoy.filters.http.cors
+          - name: envoy.filters.http.router
 {% if listener.use_tls | default(false) %}
         tls_context:
           common_tls_context:

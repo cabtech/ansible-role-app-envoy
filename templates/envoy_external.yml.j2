@@ -84,9 +84,9 @@ static_resources:
                   runtime_key: cors.www.enabled
 {%		endfor %}{# vhosts #}
           http_filters:
-          - name: envoy.grpc_web
-          - name: envoy.cors
-          - name: envoy.router
+          - name: envoy.filters.http.grpc_web
+          - name: envoy.filters.http.cors
+          - name: envoy.filters.http.router
 {%		if listener.use_tls | default(false) %}
       transport_socket:
         name: envoy.transport_sockets.tls
