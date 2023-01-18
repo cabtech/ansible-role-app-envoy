@@ -10,18 +10,19 @@
 
 - name: "Add Envoy repo key"
   ansible.builtin.apt_key:
-    url: "https://getenvoy.io/gpg"
-    validate_certs: true
+    keyring: "{{ envoy_repo.debian.keyring }}"
     state: present
+    validate_certs: true
+    url: "{{ envoy_repo.debian.key }}"
   become: true
   tags: ["ct-envoy"]
 
 - name: "Add Envoy repository to APT"
   ansible.builtin.apt_repository:
-    repo: "deb [arch=amd64] https://dl.bintray.com/tetrate/getenvoy-deb {{ ct_codename }} stable"
+    filename: getenvoy
+    repo: "deb [arch=amd64 signed-by={{ envoy_repo.debian.keyring }}] {{ envoy_repo.debian.url }} {{ ct_codename }} main"
     state: present
     update_cache: true
-    filename: envoy
   register: reg_envoy_repo
   become: true
   tags: ["ct-envoy"]

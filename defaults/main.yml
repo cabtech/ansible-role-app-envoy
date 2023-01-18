@@ -4,7 +4,7 @@
 envoy_admin_port: 9901
 envoy_clusters: []
 envoy_dependencies:
-  debian: ["apt-transport-https", "ca-certificates", "curl", "gnupg2", "software-properties-common"]
+  debian: ["apt-transport-https", "ca-certificates", "curl", "gnupg2", "lsb-release", "software-properties-common"]
   redhat: ["ca-certificates", "curl", "gnupg2", "yum-utils"]
 envoy_etc_dir: /etc/envoy
 envoy_generate_certificate: false
@@ -14,13 +14,21 @@ envoy_max_files: 8192
 envoy_packages:
   debian: ["getenvoy-envoy"]
   redhat: ["getenvoy-envoy"]
+envoy_proxy_style: edge_proxy
 envoy_publish_to_datadog: false
-envoy_repo_key: "https://rpm.dl.getenvoy.io/public/gpg.CF716AF503183491.key"
-envoy_repo_name: "tetrate-getenvoy-rpm-stable"
-envoy_repo_url: "https://rpm.dl.getenvoy.io/public/config.rpm.txt?distro=el&codename=7"
+envoy_repo:
+  redhat:
+    key: "https://rpm.dl.getenvoy.io/public/gpg.CF716AF503183491.key"
+    name: "tetrate-getenvoy-rpm-stable"
+    url: "https://rpm.dl.getenvoy.io/public/config.rpm.txt?distro=el&codename=7"
+  debian:
+    key: "https://deb.dl.getenvoy.io/public/gpg.8115BA8E629CC074.key"
+    keyring: /usr/share/keyrings/getenvoy-keyring.gpg
+    url: "https://deb.dl.getenvoy.io/public/deb/ubuntu"
 envoy_svc_enabled: true
 envoy_svc_name: envoy
 envoy_svc_state: started
+envoy_tls_ca: /etc/ssl/certs/ca-certificates.crt
 
 # --------------------------------
 ...
