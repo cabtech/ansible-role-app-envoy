@@ -10,21 +10,21 @@
 
 - name: "Install repo key"
   ansible.builtin.rpm_key:
-    key: "{{ envoy_repo_key }}"
+    key: "{{ envoy_repo.redhat.key }}"
     state: present
   become: true
   tags: ["ct-envoy"]
 
 - name: "Install repo"
   ansible.builtin.get_url:
-    dest: /etc/yum.repos.d/{{ envoy_repo_name }}.repo
+    dest: /etc/yum.repos.d/{{ envoy_repo.redhat.name }}.repo
     mode: "0644"
-    url: "{{ envoy_repo_url }}"
+    url: "{{ envoy_repo.redhat.url }}"
   become: true
   tags: ["ct-envoy"]
 
 - name: "Enable repo (TODO: switch from command module)"
-  ansible.builtin.command: "yum makecache --assumeyes --disablerepo='*' --enablerepo='{{ envoy_repo_name }}'"
+  ansible.builtin.command: "yum makecache --assumeyes --disablerepo='*' --enablerepo='{{ envoy_repo.redhat.name }}'"
   register: slartibartfast
   changed_when: "'gibberish198230182' in slartibartfast.stdout"
   become: true
