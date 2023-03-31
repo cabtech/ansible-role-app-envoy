@@ -9,7 +9,7 @@ Role for installing an [Envoy](https://www.envoyproxy.io/) proxy
 | envoy_clusters | list(dict) | [] | see below on how to define upstreams | 
 | envoy_dependencies | list(string) | see `defaults/main.yml` |  packages to preinstall per Linux family |
 | envoy_etc_dir | string | `/etc/envoy` | where you install the config |
-| envoy_generate_certificate | Boolean | false | whether to use Let's Encrypt to generate a certificate |
+| envoy_generate_certificate | Boolean | false | whether to use [Let's Encrypt](https://letsencrypt.org/) to generate a certificate |
 | envoy_listeners | list(dict) | [] | see below on how to define listeners | 
 | envoy_max_files | integer | 8192 | sysctl limit for open files |
 | envoy_packages | list(string) | see `defaults/main.yml` | main Envoy package |
@@ -24,7 +24,7 @@ Role for installing an [Envoy](https://www.envoyproxy.io/) proxy
 ## Optional Variables
 | Name | Type | Comment |
 | ---- | ------- | ------- |
-| envoy_email_addr | string | Used when creating a `Let's Encrypt` certificate (see `envoy_generate_certificate`) |
+| envoy_email_addr | string | Used when creating a [Let's Encrypt](https://letsencrypt.org/) certificate (see `envoy_generate_certificate`) |
 | envoy_extra_allow_headers | CSV | extra allowable headers to append to default set | e.g. 'grpc-encoding,content-encoding' | 
 | envoy_tls_certchain | UnixPath | example `/etc/letsencrypt/live/example.com/fullchain.pem` |
 | envoy_tls_prikey | UnixPath | example `/etc/letsencrypt/live/example.com/privkey.pem` |
@@ -50,11 +50,11 @@ List of dictionaries with the following keys:
 | full_domains | list(string) | na | added unaltered to domains list |
 | port | integer | na | port to listen on |
 | sub_domains | list(string) | na | appended to fqdn and added domains list, e.g. [':443', ''] |
-| use_tls | Boolean | true | if true, adds a `tls_context` section (pointing to Let's Encrypt certs) to a listener |
+| use_tls | Boolean | true | if true, adds a `tls_context` section (pointing to your cert and prikey) to a listener |
 | websocket | Boolean | false | if true, adds `upgrade_configs` section |
 
 ## Certificates
-If you want to use Let's Encrypt certificates with your proxy, it's easier to create them first and then set `envoy_tls_certchain` and `envoy_tls_prikey`.
+If you want to use [Let's Encrypt](https://letsencrypt.org) certificates with your proxy, it's easier to create them first and then set `envoy_tls_certchain` and `envoy_tls_prikey`.
 
 ## Examples
 There are two styles of proxy controlled by the `envoy_proxy_style` variable.
