@@ -1,32 +1,34 @@
 ----
 # ansible-role-app-envoy
-Role for installing an Envoy edge proxy
+Role for installing an [Envoy](https://www.envoyproxy.io/) proxy
 
-## Required Variables
-| Name | Type | Purpose |
-| ---- | ------- | ----- |
-| envoy_clusters | see below | upstream clusters that listeners can forward to |
-| envoy_listeners| see below | how traffic is accepted and routed |
+## Default Variables
+| Name | Type | Value | Comment |
+| ---- | ---- | ----- | ------- |
+| envoy_admin_port | integer | 9901 | where the admin UI listens |
+| envoy_clusters | list(dict) | [] | see below on how to define upstreams | 
+| envoy_dependencies | list(string) | see `defaults/main.yml` |  packages to preinstall per Linux family |
+| envoy_etc_dir | string | `/etc/envoy` | where you install the config |
+| envoy_generate_certificate | Boolean | false | whether to use Let's Encrypt to generate a certificate |
+| envoy_listeners | list(dict) | [] | see below on how to define listeners | 
+| envoy_max_files | integer | 8192 | sysctl limit for open files |
+| envoy_packages | list(string) | see `defaults/main.yml` | main Envoy package |
+| envoy_proxy_style | string | `edge_proxy` | see Examples section below |
+| envoy_publish_to_datadog | Boolean | false | choose whether to add Datadog config for Envoy |
+| envoy_repo | dict(dict) | see `defaults/main.yml` | where to find the Envoy repo and its signing keys |
+| envoy_svc_enabled | Boolean | true | should the service start at boot |
+| envoy_svc_name | string | envoy | name of the Systemd service |
+| envoy_svc_state | SystmedState | started | state of the service |
+| envoy_tls_ca | UnixPath | `/etc/ssl/certs/ca-certificates.crt` ||
 
 ## Optional Variables
-| Name | Type | Purpose | Comment |
-| ---- | ------- | ----- | ------- |
-| envoy_email_addr | string | Used when creating a `Let's Encrypt` certificate (see `envoy_generate_certificate`) ||
+| Name | Type | Comment |
+| ---- | ------- | ------- |
+| envoy_email_addr | string | Used when creating a `Let's Encrypt` certificate (see `envoy_generate_certificate`) |
 | envoy_extra_allow_headers | CSV | extra allowable headers to append to default set | e.g. 'grpc-encoding,content-encoding' | 
-| envoy_ulimit_nofile | int | used to pass `LimitNOFILE=N` to the Envoy unit file ||
-
-## Defaults
-| Name | Type | Purpose | Value |
-| ---- | ---- | ------- | ----- |
-| envoy_admin_port | integer | where the admin UI listens | 9901 |
-| envoy_dependencies | list(string) | packages to preinstall | see `defaults/main.yml` |
-| envoy_etc_dir | string | where you install the config | `/etc/envoy` |
-| envoy_generate_certificate | Boolean | whether to use Let's Encrypt to generate a certificate | false |
-| envoy_max_files | int | sysctl limit for open files | 8192 |
-| envoy_packages | list(string) | main package | `['getenvoy-envoy']` |
-| envoy_publish_to_datadog | Boolean | choose whether to add Datadog config for Envoy | false |
-| envoy_service | string | name of the Systemd service | `envoy.service` |
-| envoy_state | string | state of the service | started |
+| envoy_tls_certchain | UnixPath | example `/etc/letsencrypt/live/example.com/fullchain.pem` |
+| envoy_tls_prikey | UnixPath | example `/etc/letsencrypt/live/example.com/privkey.pem` |
+| envoy_ulimit_nofile | integer | used to pass `LimitNOFILE=N` to the Envoy unit file |
 
 ## Cluster structure
 List of dictionaries with the following keys:
@@ -40,15 +42,51 @@ List of dictionaries with the following keys:
 
 ## Listener structure
 List of dictionaries with the following keys:
-| Name | Type | Purpose | Notes |
-| ---- | ---- | ------- | ------- |
-| cluster_name | string | name of the cluster (See above) to route traffic to | na |
-| name | string | name of the listener | na |
-| fqdn | string | fully qualified domain name | na |
-| full_domains | list(string) | added unaltered to domains list ||
-| port | integer | where to listen | 8080 |
-| sub_domains | list(string) | appended to fqdn and added domains list | e.g. [':443', ''] |
-| use_tls | Boolean | if true, adds a tls_context section (pointing to Let's Encrypt certs) to a listener | default=true |
-| websocket | Boolean | if true, adds `upgrade_configs` section | default=false |
+| Name | Type | Default | Comments |
+| ---- | ---- | ------- | -------- |
+| cluster_name | string | na | name of the cluster (See above) to route traffic to |
+| name | string | na | name of the listener |
+| fqdn | string | na | fully qualified domain name |
+| full_domains | list(string) | na | added unaltered to domains list |
+| port | integer | na | port to listen on |
+| sub_domains | list(string) | na | appended to fqdn and added domains list, e.g. [':443', ''] |
+| use_tls | Boolean | true | if true, adds a `tls_context` section (pointing to Let's Encrypt certs) to a listener |
+| websocket | Boolean | false | if true, adds `upgrade_configs` section |
 
+## Certificates
+If you want to use Let's Encrypt certificates with your proxy, it's easier to create them first and then set `envoy_tls_certchain` and `envoy_tls_prikey`.
+
+## Examples
+There are two styles of proxy controlled by the `envoy_proxy_style` variable.
+
+### Edge Proxy
+You would use this if you have, say, an AWS ALB infront of everything.  You would use listener rules in the ALB to route traffic to N listeners each of which has a 1 vhost pointing to a cluster.
+```
+# TODO Example
+envoy_proxy_style: edge_proxy
+```
+
+### External Proxy
+Use this if you have a proxy directly facing the Internet.  You'll just have 1 listener (usually on port 443) and use N vhosts, each of which points to a cluster 
+```
+# Grafana example
+envoy_proxy_style: external
+envoy_tls_certchain: /etc/letsencrypt/live/example.com/fullchain.pem
+envoy_tls_prikey: /etc/letsencrypt/live/example.com/privkey.pem
+
+envoy_clusters:
+- {name:  grafana, dns: STRICT_DNS, upstreams: [{name: "127.0.0.1", port: 3000}]}
+
+envoy_listeners:
+- name: main
+  add_redirect: true
+  port: 443
+  use_tls: true
+  vhosts:
+  - name: grafana
+    cluster_name: grafana
+    fqdn: "example.com"
+    sub_domains: [":443", ""]
+
+```
 ****
