@@ -1,12 +1,14 @@
 ---
 # --------------------------------
 
-- name: "Include some common tasks"
-  include_tasks: common-pre.yml
+- name: "Include common tasks"
+  ansible.builtin.include_tasks:
+    file: common-pre.yml
   tags: ["ct-envoy"]
 
-- name: "Include {{ ct_family }} tasks"
-  include_tasks: setup-{{ ct_family }}.yml
+- name: "Include tasks per OS-family"
+  ansible.builtin.include_tasks:
+    file: setup-{{ ct_family }}.yml
   when:
   - ct_family == "debian" or ct_family == "redhat"
   tags: ["ct-envoy"]
@@ -22,7 +24,7 @@
   become: true
   tags: ["ct-envoy"]
 
-- name: "Set {{ envoy_svc_name }} service to {{ envoy_svc_state }}"
+- name: "Set service state"
   ansible.builtin.systemd:
     daemon_reload: "{{ reg_service is changed }}"
     enabled: "{{ envoy_svc_enabled }}"
@@ -31,8 +33,9 @@
   become: true
   tags: ["ct-envoy"]
 
-- name: "Include more common tasks"
-  include_tasks: common-post.yml
+- name: "Include common tasks"
+  ansible.builtin.include_tasks:
+    file: common-post.yml
   tags: ["ct-envoy"]
 
 # --------------------------------
