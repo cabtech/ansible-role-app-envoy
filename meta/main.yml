@@ -1,7 +1,23 @@
 ---
+# --------------------------------
+
 dependencies:
 - src: git+https://github.com/cabtech/ansible-role-util-facts.git
-  version: '1.0.1'
+  version: "1.1.0"
 - src: git+https://github.com/cabtech/ansible-role-util-certbot.git
-  version: '1.2.1'
+  version: "1.2.1"
+
+galaxy_info:
+  author: Tim Short
+  description: Installs an Envoy proxy
+  galaxy_tags: [proxy]
+  license: GPL v3
+  role_name: ansible_role_app_envoy
+  min_ansible_version: "2"
+  namespace: cabtech
+  platforms:
+  - name: Ubuntu
+    versions: [bionic, focal, jammy]
+
+# --------------------------------
 ...
