@@ -47,7 +47,7 @@
     group: root
     mode: "0644"
     owner: root
-    src: envoy_{{envoy_proxy_style}}.yml.j2
+    src: envoy_{{ envoy_proxy_style }}.yml.j2
   notify: Handler_Restart_Envoy
   become: true
   tags: ["ct-envoy"]
