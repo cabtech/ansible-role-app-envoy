@@ -6,6 +6,7 @@ Role for installing an [Envoy](https://www.envoyproxy.io/) proxy
 | Name | Type | Value | Comment |
 | ---- | ---- | ----- | ------- |
 | envoy_admin_port | integer | 9901 | where the admin UI listens |
+| envoy_certbot_domain_file | UnixPath | /etc/envoy/domains.txt | iff envoy_certbot_domain_names is set, generate file to pass to `manage-letencrypt.sh` |
 | envoy_clusters | list(dict) | [] | see below on how to define upstreams | 
 | envoy_dependencies | list(string) | see `defaults/main.yml` |  packages to preinstall per Linux family |
 | envoy_etc_dir | string | `/etc/envoy` | where you install the config |
@@ -24,6 +25,7 @@ Role for installing an [Envoy](https://www.envoyproxy.io/) proxy
 ## Optional Variables
 | Name | Type | Comment |
 | ---- | ------- | ------- |
+| envoy_certbot_domain_names | list(string) | used to render `envoy_certbot_domain_file` |
 | envoy_email_addr | string | Used when creating a [Let's Encrypt](https://letsencrypt.org/) certificate (see `envoy_generate_certificate`) |
 | envoy_extra_allow_headers | CSV | extra allowable headers to append to default set | e.g. 'grpc-encoding,content-encoding' | 
 | envoy_tls_certchain | UnixPath | example `/etc/letsencrypt/live/example.com/fullchain.pem` |
