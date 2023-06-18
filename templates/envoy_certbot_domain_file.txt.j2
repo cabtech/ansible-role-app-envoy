@@ -1,6 +1,6 @@
 # MANAGED_BY_ANSIBLE
 {%	if envoy_certbot_domain_names is defined %}
 {%		for domain in envoy_certbot_domain_names %}
-domain
+{{ domain }}
 {%		endfor %}
 {%	endif %}
