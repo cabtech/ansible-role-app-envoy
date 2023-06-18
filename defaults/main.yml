@@ -2,6 +2,7 @@
 # --------------------------------
 
 envoy_admin_port: 9901
+envoy_certbot_domain_file: /etc/envoy/certbot-domains.txt
 envoy_clusters: []
 envoy_dependencies:
   debian: ["apt-transport-https", "ca-certificates", "curl", "gnupg2", "lsb-release", "software-properties-common"]
