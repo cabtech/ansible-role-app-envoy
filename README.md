@@ -7,11 +7,11 @@ Role for installing an [Envoy](https://www.envoyproxy.io/) proxy
 | ---- | ---- | ----- | ------- |
 | envoy_admin_port | integer | 9901 | where the admin UI listens |
 | envoy_certbot_domain_file | UnixPath | /etc/envoy/domains.txt | iff envoy_certbot_domain_names is set, generate file to pass to `manage-letencrypt.sh` |
-| envoy_clusters | list(dict) | [] | see below on how to define upstreams | 
+| envoy_clusters | list(dict) | [] | see below on how to define upstreams |
 | envoy_dependencies | list(string) | see `defaults/main.yml` |  packages to preinstall per Linux family |
 | envoy_etc_dir | string | `/etc/envoy` | where you install the config |
 | envoy_generate_certificate | Boolean | false | whether to use [Let's Encrypt](https://letsencrypt.org/) to generate a certificate |
-| envoy_listeners | list(dict) | [] | see below on how to define listeners | 
+| envoy_listeners | list(listener) | [] | see below on how to define listeners |
 | envoy_max_files | integer | 8192 | sysctl limit for open files |
 | envoy_packages | list(string) | see `defaults/main.yml` | main Envoy package |
 | envoy_proxy_style | string | `edge_proxy` | see Examples section below |
@@ -27,7 +27,7 @@ Role for installing an [Envoy](https://www.envoyproxy.io/) proxy
 | ---- | ------- | ------- |
 | envoy_certbot_domain_names | list(string) | used to render `envoy_certbot_domain_file` |
 | envoy_email_addr | string | Used when creating a [Let's Encrypt](https://letsencrypt.org/) certificate (see `envoy_generate_certificate`) |
-| envoy_extra_allow_headers | CSV | extra allowable headers to append to default set | e.g. 'grpc-encoding,content-encoding' | 
+| envoy_extra_allow_headers | CSV | extra allowable headers to append to default set | e.g. 'grpc-encoding,content-encoding' |
 | envoy_tls_certchain | UnixPath | example `/etc/letsencrypt/live/example.com/fullchain.pem` |
 | envoy_tls_prikey | UnixPath | example `/etc/letsencrypt/live/example.com/privkey.pem` |
 | envoy_ulimit_nofile | integer | used to pass `LimitNOFILE=N` to the Envoy unit file |
@@ -42,7 +42,7 @@ List of dictionaries with the following keys:
 | http2 | optional | Boolean | if true, include http2_protocol_options | default=true |
 | upstreams | required | list(dict(name, port)) | upstream endpoints and ports | na |
 
-## Listener structure
+## `listener` structure
 List of dictionaries with the following keys:
 | Name | Type | Default | Comments |
 | ---- | ---- | ------- | -------- |
@@ -53,7 +53,18 @@ List of dictionaries with the following keys:
 | port | integer | na | port to listen on |
 | sub_domains | list(string) | na | appended to fqdn and added domains list, e.g. [':443', ''] |
 | use_tls | Boolean | true | if true, adds a `tls_context` section (pointing to your cert and prikey) to a listener |
+| vhosts | list(vhost) | [] ||
 | websocket | Boolean | false | if true, adds `upgrade_configs` section |
+
+## `vhost` structure
+| Name | Type | Comments |
+| ---- | ---- | -------- |
+| allow_headers | string | CSV of allowable headers (overrides listener settings) |
+| allow_methods | string | CSV of allowable methods (overrides listener settings) |
+| cluster_name | string | xref(envoy_clusters[].name |
+| fqdn | string | na | fully qualified domain name |
+| name | string | unique per listener |
+| sub_domains | list(string) | na | appended to fqdn and added domains list, e.g. [':443', ''] |
 
 ## Certificates
 If you want to use [Let's Encrypt](https://letsencrypt.org) certificates with your proxy, it's easier to create them first and then set `envoy_tls_certchain` and `envoy_tls_prikey`.
@@ -69,7 +80,7 @@ envoy_proxy_style: edge_proxy
 ```
 
 ### External Proxy
-Use this if you have a proxy directly facing the Internet.  You'll just have 1 listener (usually on port 443) and use N vhosts, each of which points to a cluster 
+Use this if you have a proxy directly facing the Internet.  You'll just have 1 listener (usually on port 443) and use N vhosts, each of which points to a cluster
 ```
 # Grafana example
 envoy_proxy_style: external

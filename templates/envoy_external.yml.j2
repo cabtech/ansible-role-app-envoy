@@ -69,8 +69,10 @@ static_resources:
 {%			endif %}
                 allow_origin_string_match:
                 - {contains: "*"}
-                allow_methods: {{DEFAULT_ALLOW_METHODS}}
-{%			if envoy_extra_allow_headers is defined %}
+                allow_methods: {{ vhost.allow_methods | default(DEFAULT_ALLOW_METHODS) }}
+{%			if vhost.allow_headers is defined %}
+                allow_headers: "{{ vhost.allow_headers }}"
+{%			elif envoy_extra_allow_headers is defined %}
                 allow_headers: {{DEFAULT_ALLOW_HEADERS}},{{envoy_extra_allow_headers}}
 {%			else %}
                 allow_headers: {{DEFAULT_ALLOW_HEADERS}}
