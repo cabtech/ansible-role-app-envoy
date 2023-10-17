@@ -1,13 +1,14 @@
 ---
 # --------------------------------
 
-- name: "Set up Envoy directories"
+- name: "Set up directories"
   ansible.builtin.file:
-    group: root
-    mode: "0755"
-    owner: root
-    path: "{{ envoy_etc_dir }}"
+    group: "{{ item.group }}"
+    mode: "{{ item.mode }}"
+    owner: "{{ item.owner }}"
+    path: "{{ item.path }}"
     state: directory
+  loop: "{{ envoy_dirs }}"
   become: true
   tags: ["ct-envoy"]
 
@@ -55,7 +56,7 @@
 - name: "Render Envoy config file"
   ansible.builtin.template:
     backup: true
-    dest: "{{ envoy_etc_dir }}/envoy.yaml"  # must end with .yaml
+    dest: "{{ envoy_cfg_dir }}/envoy.yaml"  # must end with .yaml
     group: root
     mode: "0644"
     owner: root

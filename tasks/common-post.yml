@@ -1,7 +1,7 @@
 ---
 # --------------------------------
 
-- name: "See if Datadog is installed (check_mode:false)"
+- name: "See if Datadog is installed (CMF)"
   ansible.builtin.stat:
     path: /etc/datadog-agent
   check_mode: false

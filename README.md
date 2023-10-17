@@ -7,11 +7,14 @@ Role for installing an [Envoy](https://www.envoyproxy.io/) proxy
 | ---- | ---- | ----- | ------- |
 | envoy_admin_port | integer | 9901 | where the admin UI listens |
 | envoy_certbot_domain_file | UnixPath | /etc/envoy/domains.txt | iff envoy_certbot_domain_names is set, generate file to pass to `manage-letencrypt.sh` |
+| envoy_cfg_dir | string | `/etc/envoy` | where you install the config |
 | envoy_clusters | list(dict) | [] | see below on how to define upstreams |
 | envoy_dependencies | list(string) | see `defaults/main.yml` |  packages to preinstall per Linux family |
-| envoy_etc_dir | string | `/etc/envoy` | where you install the config |
+| envoy_dirs | list(dict) | see `defaults/main.yml` |  directories to add |
 | envoy_generate_certificate | Boolean | false | whether to use [Let's Encrypt](https://letsencrypt.org/) to generate a certificate |
 | envoy_listeners | list(listener) | [] | see below on how to define listeners |
+| envoy_log_dir | UnixDir | `/var/log/envoy` | where the logs go |
+| envoy_log_file | UnixFile | `envoy.log` | log file in envoy_log_dir |
 | envoy_max_files | integer | 8192 | sysctl limit for open files |
 | envoy_packages | list(string) | see `defaults/main.yml` | main Envoy package |
 | envoy_proxy_style | string | `edge_proxy` | see Examples section below |

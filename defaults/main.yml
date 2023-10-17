@@ -3,13 +3,18 @@
 
 envoy_admin_port: 9901
 envoy_certbot_domain_file: /etc/envoy/certbot-domains.txt
+envoy_cfg_dir: /etc/envoy
 envoy_clusters: []
 envoy_dependencies:
   debian: ["apt-transport-https", "ca-certificates", "curl", "gnupg2", "lsb-release", "software-properties-common"]
   redhat: ["ca-certificates", "curl", "gnupg2", "yum-utils"]
-envoy_etc_dir: /etc/envoy
+envoy_dirs:
+- {group: root, mode: "0755", owner: root, path: "{{ envoy_cfg_dir }}"}
+- {group: root, mode: "0755", owner: root, path: "{{ envoy_log_dir }}"}
 envoy_generate_certificate: false
 envoy_listeners: []
+envoy_log_dir: /var/log/envoy
+envoy_log_file: envoy.log
 envoy_max_files: 8192
 envoy_packages:
   debian: ["getenvoy-envoy"]
