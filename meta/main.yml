@@ -1,11 +1,11 @@
 ---
 # --------------------------------
 
-dependencies:
+dependencies: []
+
+__dependencies:
 - src: git+https://github.com/cabtech/ansible-role-util-facts.git
   version: "1.2.2"
-- src: git+https://github.com/cabtech/ansible-role-util-certbot.git
-  version: "1.7.1"
 
 galaxy_info:
   author: Tim Short

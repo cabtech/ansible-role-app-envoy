@@ -12,8 +12,8 @@ lint: .ylint .alint
 
 push:
 	@mkdir -p /mnt/hgfs/shared/ansible-role-app-envoy
-	rsync -a * /mnt/hgfs/shared/ansible-role-app-envoy
+	rsync -a .config .gitignore [A-z]* /mnt/hgfs/shared/ansible-role-app-envoy
 
+.PHONY: clean
 clean:
 	@/bin/rm -f .alint .ylint
-
