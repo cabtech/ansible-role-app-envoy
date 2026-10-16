@@ -27,11 +27,11 @@ jobs:
     - name: "Setup Python"
       uses: actions/setup-python@v4
       with:
-        python-version: "3.12.3"
+        python-version: "3.14"
     - name: "Add Packages"
       run: |
         python -m pip install --upgrade pip
-        pip install ansible==9.4.0 ansible-lint==24.5.0
+        pip install ansible-core==2.21.5 ansible-lint==26.10.1
     - name: "ansible-lint"
       run: ansible-lint --config .config/ansible-lint.yml --exclude=playbooks
 
