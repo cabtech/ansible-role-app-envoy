@@ -1,0 +1,39 @@
+---
+# --------------------------------
+
+name: "Lint Ansible"
+on:  # yamllint disable-line rule:truthy
+  push:
+    branches: ["main"]
+  workflow_dispatch:
+jobs:
+  yamllint:
+    runs-on: ubuntu-latest
+    steps:
+    - name: "Checkout"
+      uses: actions/checkout@v2
+    - name: "yamllint"
+      uses: karancode/yamllint-github-action@master
+      with:
+        yamllint_comment: false
+        yamllint_config_filepath: .config/yamllint
+        yamllint_file_or_dir: "."
+        yamllint_strict: true
+  ansible-lint:
+    runs-on: ubuntu-latest
+    steps:
+    - name: "Checkout"
+      uses: actions/checkout@v3
+    - name: "Setup Python"
+      uses: actions/setup-python@v4
+      with:
+        python-version: "3.12.3"
+    - name: "Add Packages"
+      run: |
+        python -m pip install --upgrade pip
+        pip install ansible==9.4.0 ansible-lint==24.5.0
+    - name: "ansible-lint"
+      run: ansible-lint --config .config/ansible-lint.yml --exclude=playbooks
+
+# --------------------------------
+...
