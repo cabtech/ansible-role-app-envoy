@@ -2,7 +2,7 @@
 # --------------------------------
 
 - name: "Install package dependencies"
-  ansible.builtin.yum:
+  ansible.builtin.dnf:
     name: "{{ envoy_dependencies.redhat }}"
     state: present
   become: true
@@ -31,7 +31,7 @@
   tags: ["ct-envoy"]
 
 - name: "Install main package"
-  ansible.builtin.yum:
+  ansible.builtin.dnf:
     name: "{{ envoy_packages.redhat }}"
     state: present
   become: true
