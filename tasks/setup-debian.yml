@@ -20,7 +20,7 @@
 - name: "Add Envoy repository to APT"
   ansible.builtin.apt_repository:
     filename: getenvoy
-    repo: "deb [arch=amd64 signed-by={{ envoy_repo.debian.keyring }}] {{ envoy_repo.debian.url }} {{ ct_codename }} main"
+    repo: "deb [arch=amd64 signed-by={{ envoy_repo.debian.keyring }}] {{ envoy_repo.debian.url }} {{ ansible_facts['distribution_release'] | lower }} main"
     state: present
     update_cache: true
   register: reg_envoy_repo

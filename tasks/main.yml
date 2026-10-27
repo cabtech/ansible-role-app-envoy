@@ -8,9 +8,9 @@
 
 - name: "Include tasks per OS-family"
   ansible.builtin.include_tasks:
-    file: setup-{{ ct_family }}.yml
+    file: setup-{{ ansible_facts['os_family'] | lower }}.yml
   when:
-  - ct_family == "debian" or ct_family == "redhat"
+  - ansible_facts['os_family'] == "Debian" or ansible_facts['os_family'] == "RedHat"
   tags: ["ct-envoy"]
 
 - name: "Create systemd unit file for {{ envoy_svc_name }}"

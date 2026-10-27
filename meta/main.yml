@@ -3,10 +3,6 @@
 
 dependencies: []
 
-__dependencies:
-- src: git+https://github.com/cabtech/ansible-role-util-facts.git
-  version: "1.3.0"
-
 galaxy_info:
   author: Tim Short
   description: Installs an Envoy proxy
