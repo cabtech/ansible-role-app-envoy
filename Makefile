@@ -1,5 +1,7 @@
 lint: .lintyaml .lintansible
 
+.PHONY: clean init-uv lint update-uv
+
 .lintansible: */*.yml .config/ansible-lint.yml
 	uv run ansible-lint --config-file=.config/ansible-lint.yml
 	@touch $@
@@ -10,7 +12,6 @@ lint: .lintyaml .lintansible
 
 # --------------------------------
 
-.PHONY: clean
 clean:
 	@/bin/rm -f .lint*
 
