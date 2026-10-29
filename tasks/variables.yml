@@ -1,0 +1,19 @@
+---
+# --------------------------------
+
+- name: "Include variables (FF)"
+  ansible.builtin.include_vars:
+    file: "{{ lookup('ansible.builtin.first_found', params) }}"
+  vars:
+    params:
+      files:
+      - "{{ ansible_facts['distribution'] }}-{{ ansible_facts['distribution_major_version'].split('.')[0] }}.yml"
+      - "{{ ansible_facts['distribution'] }}.yml"
+      - "{{ ansible_facts['os_family'] }}.yml"
+      - "default.yml"
+      paths:
+      - vars
+  tags: ["ct-envoy"]
+
+# --------------------------------
+...
