@@ -6,7 +6,7 @@
     file: variables.yml
   tags: ["ct-envoy"]
 
-- name: "Include common tasks"
+- name: "Include common pre-tasks"
   ansible.builtin.include_tasks:
     file: common-pre.yml
   tags: ["ct-envoy"]
@@ -43,7 +43,7 @@
   become: true
   tags: ["ct-envoy"]
 
-- name: "Include common tasks"
+- name: "Include common post-tasks"
   ansible.builtin.include_tasks:
     file: common-post.yml
   tags: ["ct-envoy"]

@@ -25,8 +25,7 @@
 
 - name: "Enable repo (TODO: switch from command module)"
   ansible.builtin.command: "yum makecache --assumeyes --disablerepo='*' --enablerepo='{{ envoy_repo.redhat.name }}'"
-  register: slartibartfast
-  changed_when: "'gibberish198230182' in slartibartfast.stdout"
+  changed_when: false
   become: true
   tags: ["ct-envoy"]
 
