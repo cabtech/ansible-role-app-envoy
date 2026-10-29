@@ -6,6 +6,11 @@
     file: variables.yml
   tags: ["ct-envoy"]
 
+- name: "Include common tasks"
+  ansible.builtin.include_tasks:
+    file: common-pre.yml
+  tags: ["ct-envoy"]
+
 - name: "Disto/Family tasks (FF)"
   ansible.builtin.include_tasks:
     file: "{{ lookup('ansible.builtin.first_found', params) }}"
@@ -16,18 +21,6 @@
       - "{{ ansible_facts['distribution'] }}.yml"
       - "{{ ansible_facts['os_family'] }}.yml"
       - "default.yml"
-  tags: ["ct-envoy"]
-
-- name: "Include common tasks"
-  ansible.builtin.include_tasks:
-    file: common-pre.yml
-  tags: ["ct-envoy"]
-
-- name: "Include tasks per OS-family"
-  ansible.builtin.include_tasks:
-    file: setup-{{ ansible_facts['os_family'] | lower }}.yml
-  when:
-  - ansible_facts['os_family'] == "Debian" or ansible_facts['os_family'] == "RedHat"
   tags: ["ct-envoy"]
 
 - name: "Create systemd unit file for {{ envoy_svc_name }}"
