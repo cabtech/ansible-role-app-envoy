@@ -5,9 +5,6 @@ envoy_admin_port: 9901
 envoy_certbot_domain_file: /etc/envoy/certbot-domains.txt
 envoy_cfg_dir: /etc/envoy
 envoy_clusters: []
-envoy_dependencies:
-  debian: ["apt-transport-https", "ca-certificates", "curl", "gnupg2", "lsb-release", "software-properties-common"]
-  redhat: ["ca-certificates", "curl", "gnupg2", "yum-utils"]
 envoy_dirs:
 - {group: root, mode: "0755", owner: root, path: "{{ envoy_cfg_dir }}"}
 - {group: root, mode: "0755", owner: root, path: "{{ envoy_log_dir }}"}
@@ -16,20 +13,8 @@ envoy_listeners: []
 envoy_log_dir: /var/log/envoy
 envoy_log_file: envoy.log
 envoy_max_files: 8192
-envoy_packages:
-  debian: ["getenvoy-envoy"]
-  redhat: ["getenvoy-envoy"]
 envoy_proxy_style: edge_proxy
 envoy_publish_to_datadog: false
-envoy_repo:
-  redhat:
-    key: "https://rpm.dl.getenvoy.io/public/gpg.CF716AF503183491.key"
-    name: "tetrate-getenvoy-rpm-stable"
-    url: "https://rpm.dl.getenvoy.io/public/config.rpm.txt?distro=el&codename=7"
-  debian:
-    key: "https://deb.dl.getenvoy.io/public/gpg.8115BA8E629CC074.key"
-    keyring: /usr/share/keyrings/getenvoy-keyring.gpg
-    url: "https://deb.dl.getenvoy.io/public/deb/ubuntu"
 envoy_svc_enabled: true
 envoy_svc_name: envoy
 envoy_svc_state: started

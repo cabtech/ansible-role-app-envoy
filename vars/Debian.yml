@@ -1,0 +1,12 @@
+---
+# --------------------------------
+
+envoy_dependencies: ["apt-transport-https", "ca-certificates", "curl", "gnupg2", "lsb-release", "software-properties-common"]
+envoy_packages: ["getenvoy-envoy"]
+envoy_repo:
+  key: "https://deb.dl.getenvoy.io/public/gpg.8115BA8E629CC074.key"
+  keyring: /usr/share/keyrings/getenvoy-keyring.gpg
+  url: "https://deb.dl.getenvoy.io/public/deb/ubuntu"
+
+# --------------------------------
+...

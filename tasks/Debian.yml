@@ -3,24 +3,24 @@
 
 - name: "Install some packages so we can install the repo key"
   ansible.builtin.apt:
-    name: "{{ envoy_dependencies.debian }}"
+    name: "{{ envoy_dependencies }}"
     state: present
   become: true
   tags: ["ct-envoy"]
 
 - name: "Add Envoy repo key"
   ansible.builtin.apt_key:
-    keyring: "{{ envoy_repo.debian.keyring }}"
+    keyring: "{{ envoy_repo.keyring }}"
     state: present
     validate_certs: true
-    url: "{{ envoy_repo.debian.key }}"
+    url: "{{ envoy_repo.key }}"
   become: true
   tags: ["ct-envoy"]
 
 - name: "Add Envoy repository to APT"
   ansible.builtin.apt_repository:
     filename: getenvoy
-    repo: "deb [arch=amd64 signed-by={{ envoy_repo.debian.keyring }}] {{ envoy_repo.debian.url }} {{ ansible_facts['distribution_release'] | lower }} main"
+    repo: "deb [arch=amd64 signed-by={{ envoy_repo.keyring }}] {{ envoy_repo.url }} {{ ansible_facts['distribution_release'] | lower }} main"
     state: present
     update_cache: true
   register: reg_envoy_repo
@@ -29,7 +29,7 @@
 
 - name: "Update APT cache and install Envoy"
   ansible.builtin.apt:
-    name: "{{ envoy_packages.debian }}"
+    name: "{{ envoy_packages }}"
     update_cache: "{{ reg_envoy_repo is changed }}"
     state: present
   become: true

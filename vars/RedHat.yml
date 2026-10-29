@@ -1,0 +1,12 @@
+---
+# --------------------------------
+
+envoy_dependencies: ["ca-certificates", "curl", "gnupg2", "yum-utils"]
+envoy_packages: ["getenvoy-envoy"]
+envoy_repo:
+  key: "https://rpm.dl.getenvoy.io/public/gpg.CF716AF503183491.key"
+  name: "tetrate-getenvoy-rpm-stable"
+  url: "https://rpm.dl.getenvoy.io/public/config.rpm.txt?distro=el&codename=7"
+
+# --------------------------------
+...

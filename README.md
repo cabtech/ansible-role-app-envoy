@@ -9,21 +9,27 @@ Role for installing an [Envoy](https://www.envoyproxy.io/) proxy
 | envoy_certbot_domain_file | UnixPath | /etc/envoy/domains.txt | iff envoy_certbot_domain_names is set, generate file to pass to `manage-letencrypt.sh` |
 | envoy_cfg_dir | string | `/etc/envoy` | where you install the config |
 | envoy_clusters | list(dict) | [] | see below on how to define upstreams |
-| envoy_dependencies | list(string) | see `defaults/main.yml` |  packages to preinstall per Linux family |
 | envoy_dirs | list(dict) | see `defaults/main.yml` |  directories to add |
 | envoy_generate_certificate | Boolean | false | whether to use [Let's Encrypt](https://letsencrypt.org/) to generate a certificate |
 | envoy_listeners | list(listener) | [] | see below on how to define listeners |
 | envoy_log_dir | UnixDir | `/var/log/envoy` | where the logs go |
 | envoy_log_file | UnixFile | `envoy.log` | log file in envoy_log_dir |
 | envoy_max_files | integer | 8192 | sysctl limit for open files |
-| envoy_packages | list(string) | see `defaults/main.yml` | main Envoy package |
 | envoy_proxy_style | string | `edge_proxy` | see Examples section below |
 | envoy_publish_to_datadog | Boolean | false | choose whether to add Datadog config for Envoy |
-| envoy_repo | dict(dict) | see `defaults/main.yml` | where to find the Envoy repo and its signing keys |
 | envoy_svc_enabled | Boolean | true | should the service start at boot |
 | envoy_svc_name | string | envoy | name of the Systemd service |
 | envoy_svc_state | SystmedState | started | state of the service |
 | envoy_tls_ca | UnixPath | `/etc/ssl/certs/ca-certificates.crt` ||
+
+## OS family variables
+Set in `vars/Debian.yml` and `vars/RedHat.yml`, loaded by the first_found include in `tasks/variables.yml`.
+
+| Name | Type | Comment |
+| ---- | ---- | ------- |
+| envoy_dependencies | list(string) | packages to preinstall |
+| envoy_packages | list(string) | main Envoy package |
+| envoy_repo | dict | where to find the Envoy repo and its signing key |
 
 ## Optional Variables
 | Name | Type | Comment |
