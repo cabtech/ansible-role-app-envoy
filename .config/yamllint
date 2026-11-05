@@ -5,6 +5,12 @@ ignore: |
   .venv
 
 rules:
+  document-end:
+    level: error
+    present: true
+  document-start:
+    level: error
+    present: true
   line-length:
     level: warning
     max: 1024
