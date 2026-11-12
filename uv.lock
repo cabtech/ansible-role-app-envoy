@@ -1,5 +1,5 @@
 version = 1
-revision = 3
+revision = 5
 requires-python = ">=3.14"
 
 [[package]]
@@ -64,8 +64,10 @@ wheels = [
 [[package]]
 name = "ansible-role-app-envoy"
 version = "0.1.0"
-source = { editable = "." }
-dependencies = [
+source = { virtual = "." }
+
+[package.dev-dependencies]
+dev = [
     { name = "ansible-lint" },
     { name = "black" },
     { name = "flake8" },
@@ -74,7 +76,9 @@ dependencies = [
 ]
 
 [package.metadata]
-requires-dist = [
+
+[package.metadata.requires-dev]
+dev = [
     { name = "ansible-lint", specifier = ">=26.10.1" },
     { name = "black", specifier = ">=26.10.1" },
     { name = "flake8", specifier = ">=7.4.1" },

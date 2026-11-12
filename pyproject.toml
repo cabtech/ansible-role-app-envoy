@@ -7,7 +7,10 @@ authors = [
     { name = "Tim Short", email = "tim.short@cabernet.tech" }
 ]
 requires-python = ">=3.14"
-dependencies = [
+dependencies = []
+
+[dependency-groups]
+dev = [
     "ansible-lint>=26.10.1",
     "black>=26.10.1",
     "flake8>=7.4.1",
@@ -15,9 +18,5 @@ dependencies = [
     "yamllint>=1.38.0",
 ]
 
-[project.scripts]
-ansible-role-app-envoy = "ansible_role_app_envoy:main"
-
-[build-system]
-requires = ["uv_build>=0.12.21,<0.13.0"]
-build-backend = "uv_build"
+[tool.uv]
+package = false
